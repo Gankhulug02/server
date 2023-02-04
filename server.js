@@ -21,7 +21,14 @@ server.post("/signup", (req, res) => {
   const id = uuidv4();
   const salted = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salted);
+  const findUser = parsedData.users.find((user) => user.email === email);
   console.log(hashedPassword);
+  if (findUser) {
+    res
+      .status(401)
+      .json({ message: "Ийм email тэй хэрэглэгч бүртгэлтэй байна" });
+    return;
+  }
 
   const newUser = {
     id,
