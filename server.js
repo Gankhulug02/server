@@ -108,6 +108,64 @@ server.delete("/users/:id", (req, res) => {
     .json({ message: `${id} тай хэрэглэгч амжилттай устгагдлаа.` });
 });
 
+//start of category
+
+server.post("/categories", (req, res) => {
+  try {
+    const content = fs.readFileSync("categories.json", "utf-8");
+    const data = JSON.parse(content);
+    const newData = { ...req.body };
+    data.categories.push(newData);
+    fs.writeFileSync("categories.json", JSON.stringify(data));
+    res.status(201).json({ message: "amijilttai uuseglee", data: newData });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+  res.json({});
+});
+
+server.get("/categories", (req, res) => {
+  try {
+    const categories = fs.readFileSync("categories.json", "utf-8");
+    const data = JSON.parse(categories);
+    res.status(200).json({ message: "success", data: data });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+});
+
+server.get("/categories/:id", (req, res) => {
+  const { id } = req.params;
+  const data = fs.readFileSync("categories.json", "utf-8");
+  const parsedData = JSON.parse(data);
+  const category = parsedData.categories.find((el) => el.id === id);
+  res.status(200).json({ category });
+});
+
+server.put("/categories/:id", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const data = fs.readFileSync("categories.json", "utf-8");
+  const parsedData = JSON.parse(data);
+  const findIndex = parsedData.categories.findIndex((el) => el.id === id);
+  parsedData.categories[findIndex].title = title;
+  fs.writeFileSync("categories.json", JSON.stringify(parsedData));
+  res.status(201).json({ message: "Category amjilttai soligdloo" });
+});
+
+server.delete("/categories/:title", (req, res) => {
+  const { title } = req.params;
+  const data = fs.readFileSync("categories.json", "utf-8");
+  const parsedData = JSON.parse(data);
+  const findIndex = parsedData.categories.findIndex((el) => el.title === title);
+  parsedData.categories.splice(findIndex, 1);
+  fs.writeFileSync("categories.json", JSON.stringify(parsedData));
+  res
+    .status(201)
+    .json({ message: `${title} тай category амжилттай устгагдлаа.` });
+});
+//end of category
+
 server.listen(port, () => {
   console.log(`сэрвэр аслаа http://localhost:${port}/ `);
 });
