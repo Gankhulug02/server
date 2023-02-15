@@ -16,7 +16,9 @@ server.use(express.json());
 server.use("/users", usersRoute);
 server.use("/categories", categoriesRoute);
 server.use("/wishlist", wishListRoute);
-
+server.get("/", (req, res) => {
+  res.send("Express on Vercel");
+});
 server.get("/", (req, res) => {
   res.status(200).json({ message: "Hello Express Server" });
 });
