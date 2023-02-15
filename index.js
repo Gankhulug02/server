@@ -26,3 +26,5 @@ server.get("/", (req, res) => {
 server.listen(port, () => {
   console.log(`сэрвэр аслаа http://localhost:${port}/ `);
 });
+
+module.exports = server;
