@@ -23,6 +23,12 @@
       "name": "Bangkok Marriott Marquis Queen’s Park (SHA Plus+)",
       "price": "550",
       "id": "005"
+    },
+    {
+      "img": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
+      "name": "Bangkok Marriott Marquis Queen’s Park (SHA Plus+)",
+      "price": "350",
+      "id": "00"
     }
   ]
 }
