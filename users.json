@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "c259e94a-7a31-4d49-8714-0264a0531708",
+      "name": "Gankhulug",
+      "role": "user",
+      "email": "Huluguu0202@gmail.com",
+      "password": "$2b$10$aSt2h9quZEJEQLBvUJWkh.yi0hWjn4B97GIDL.hpxT5GDSXx.GYCe"
+    },
+    {
+      "id": "98132f40-c3d0-4d82-87c0-659a2651d0cd",
+      "name": "Уртнасан",
+      "role": "user",
+      "email": "@gmail.com",
+      "password": "$2b$10$Hj0VvN6UWy75zDcmUq30dOrTj.Y/fd0l092JwBmkydYFlLVZx0GVq"
+    },
+    {
+      "id": "a646416c-0489-4400-8053-9a327f13b809",
+      "name": "sdfg",
+      "role": "user",
+      "email": "asd",
+      "password": "$2b$10$LCM5znlpTFxK8OOqYnZjr.J3yC8LaoqgG8up1r1wNfDrzSUlV94Q6"
+    }
+  ]
+}
