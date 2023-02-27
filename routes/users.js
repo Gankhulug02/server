@@ -57,7 +57,7 @@ router.post("/signup", (req, res) => {
   };
 
   parsedData.users.push(newUser);
-  fs.writeFileSync("users.json", JSON.stringify(parsedData));
+  fs.writeFileSync("./data/users.json", JSON.stringify(parsedData));
 
   res.status(201).json({ message: "Шинэ хэрэглэгчийгн амжилттай бүртгэлээ." });
 });
