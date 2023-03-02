@@ -23,7 +23,99 @@ server.use("/categories", categoriesRoute);
 server.use("/wishlist", wishListRoute);
 
 server.get("/", (req, res) => {
-  res.status(200).json({ message: "Hello Express Server" });
+  connection.query(`SELECT * FROM azure_user`, (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
+});
+
+server.get("/:id", (req, res) => {
+  const { id } = req.params;
+  connection.query(
+    `SELECT * FROM azure_user WHERE aid='${id}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
+});
+
+server.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const name = req.body.name;
+  const ovog = req.body.ovog;
+
+  console.log(name, id);
+
+  connection.query(
+    `UPDATE azure_user SET name='${name}', ovog='${ovog}' WHERE aid='${id}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
+});
+
+server.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  connection.query(
+    `DELETE FROM azure_user WHERE aid='${id}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
+});
+
+server.post("/", (req, res) => {
+  const name = req.body.name;
+  const ovog = req.body.ovog;
+  const aid = req.body.aid;
+
+  console.log(name, aid, ovog);
+
+  if (!ovog) {
+    const alert = "ovog bhooson baina";
+    console.log("ERROR");
+    res.status(400).json({ message: alert });
+    return;
+  } else if (!name) {
+    const alert = "name bhooson baina";
+    console.log("ERROR");
+    res.status(400).json({ message: alert });
+    return;
+  } else if (!aid) {
+    const alert = "aid bhooson baina";
+    console.log("ERROR");
+    res.status(400).json({ message: alert });
+    return;
+  }
+
+  connection.query(
+    `INSERT INTO azure_user(aid, name, ovog) VALUE('${aid}','${name}','${ovog}')`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
 });
 
 server.listen(port, () => {
