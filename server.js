@@ -1,10 +1,17 @@
 const express = require("express"); //req = import
 const cors = require("cors");
-const fs = require("fs");
-const { json } = require("express");
+const mysql = require("mysql2");
 const usersRoute = require("./routes/users");
 const wishListRoute = require("./routes/wishlist");
 const categoriesRoute = require("./routes/categories");
+
+const connection = mysql.createConnection({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "",
+  database: "azure_db",
+});
 
 const port = 8000;
 
