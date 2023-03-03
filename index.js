@@ -53,7 +53,7 @@ server.put("/:id", (req, res) => {
   const name = req.body.name;
   const ovog = req.body.ovog;
 
-  console.log(name, id);
+  console.log(name, id, ovog);
 
   connection.query(
     `UPDATE azure_user SET name='${name}', ovog='${ovog}' WHERE aid='${id}'`,
