@@ -22,97 +22,78 @@ server.use("/users", usersRoute);
 server.use("/categories", categoriesRoute);
 server.use("/wishlist", wishListRoute);
 
-server.get("/", (req, res) => {
-  connection.query(`SELECT * FROM azure_user`, (err, result) => {
-    if (err) {
-      res.status(400).json({ message: err.message });
-      return;
-    }
+// server.get("/", (req, res) => {
+//   connection.query(`SELECT * FROM user`, (err, result) => {
+//     if (err) {
+//       res.status(400).json({ message: err.message });
+//       return;
+//     }
 
-    res.status(200).json({ message: "Succesfull", data: result });
-  });
-});
+//     res.status(200).json({ message: "Succesfull", data: result });
+//   });
+// });
 
-server.get("/:id", (req, res) => {
-  const { id } = req.params;
-  connection.query(
-    `SELECT * FROM azure_user WHERE aid='${id}'`,
-    (err, result) => {
-      if (err) {
-        res.status(400).json({ message: err.message });
-        return;
-      }
+// server.get("/:id", (req, res) => {
+//   const { id } = req.params;
+//   connection.query(
+//     `SELECT * FROM azure_user WHERE aid='${id}'`,
+//     (err, result) => {
+//       if (err) {
+//         res.status(400).json({ message: err.message });
+//         return;
+//       }
 
-      res.status(200).json({ message: "Succesfull", data: result });
-    }
-  );
-});
+//       res.status(200).json({ message: "Succesfull", data: result });
+//     }
+//   );
+// });
 
-server.put("/:id", (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
+// server.put("/:id", (req, res) => {
+//   const { id } = req.params;
+//   const body = req.body;
+//   const keys = Object.keys(body);
+//   const map = keys.map((key) => `${key}="${body[key]}"`);
+//   const join = map.join();
 
-  console.log(body);
+//   connection.query(
+//     `UPDATE user SET ${join} WHERE aid='${id}'`,
+//     (err, result) => {
+//       if (err) {
+//         res.status(400).json({ message: err.message });
+//         return;
+//       }
+//       res.status(200).json({ message: "Succesfull", data: result });
+//     }
+//   );
+// });
 
-  const keys = Object.keys(body);
-  const map = keys.map((key) => `${key}="${body[key]}"`);
-  const join = map.join();
-
-  console.log(map);
-  console.log(join);
-  connection.query(
-    `UPDATE azure_user SET ${join} WHERE aid='${id}'`,
-    (err, result) => {
-      if (err) {
-        res.status(400).json({ message: err.message });
-        return;
-      }
-      res.status(200).json({ message: "Succesfull", data: result });
-    }
-  );
-});
-
-server.delete("/:id", (req, res) => {
-  const { id } = req.params;
-
-  connection.query(
-    `DELETE FROM azure_user WHERE aid='${id}'`,
-    (err, result) => {
-      if (err) {
-        res.status(400).json({ message: err.message });
-        return;
-      }
-      res.status(200).json({ message: "Succesfull", data: result });
-    }
-  );
-});
+// server.delete("/:id", (req, res) => {
+//   const { id } = req.params;
+//   connection.query(
+//     `DELETE FROM azure_user WHERE aid='${id}'`,
+//     (err, result) => {
+//       if (err) {
+//         res.status(400).json({ message: err.message });
+//         return;
+//       }
+//       res.status(200).json({ message: "Succesfull", data: result });
+//     }
+//   );
+// });
 
 server.post("/", (req, res) => {
-  const name = req.body.name;
-  const ovog = req.body.ovog;
-  const aid = req.body.aid;
-
-  console.log(name, aid, ovog);
-
-  if (!ovog) {
-    const alert = "ovog bhooson baina";
-    console.log("ERROR");
-    res.status(400).json({ message: alert });
-    return;
-  } else if (!name) {
-    const alert = "name bhooson baina";
-    console.log("ERROR");
-    res.status(400).json({ message: alert });
-    return;
-  } else if (!aid) {
-    const alert = "aid bhooson baina";
-    console.log("ERROR");
-    res.status(400).json({ message: alert });
-    return;
-  }
-
+  const body = req.body;
+  let rawValues;
+  let ripeValues;
+  body.users.map((e) => {
+    const keys = Object.keys(e);
+    const map = keys.map((key) => `'${e[key]}'`);
+    const join = map.join();
+    rawValues += `,(${join})`;
+    ripeValues = rawValues.slice(10);
+  });
   connection.query(
-    `INSERT INTO azure_user(aid, name, ovog) VALUE('${aid}','${name}','${ovog}')`,
+    `INSERT INTO user(user_id, name, role, email, password) VALUE${ripeValues}`,
     (err, result) => {
       if (err) {
         res.status(400).json({ message: err.message });

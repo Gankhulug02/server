@@ -1,47 +1,67 @@
-const cors = require("cors");
-const fs = require("fs");
+const { connection } = require("../config/mysql");
+
+// const connection = mysql.createConnection({
+//   host: "localhost",
+//   port: 3306,
+//   user: "root",
+//   password: "",
+//   database: "azure_db",
+// });
 
 const getUsers = (req, res) => {
-  fs.readFile("./data/users.json", "utf-8", (err, data) => {
+  connection.query(`SELECT * FROM user`, (err, result) => {
     if (err) {
-      console.log("cant read file");
+      res.status(400).json({ message: err.message });
       return;
     }
-    const parsedData = JSON.parse(data);
-    res.status(200).json({ users: parsedData });
+
+    res.status(200).json({ message: "Succesfull", data: result });
   });
 };
 
 const getUser = (req, res) => {
   const { id } = req.params;
-  const data = fs.readFileSync("./data/users.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const user = parsedData.users.find((el) => el.id === id);
-  res.status(200).json({ user });
+  connection.query(
+    `SELECT * FROM user WHERE user_id='${id}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
 };
+
 const changeUser = (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
-  const data = fs.readFileSync("./data/users.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const findIndex = parsedData.users.findIndex((el) => el.id === id);
-  parsedData.users[findIndex].name = name;
-  fs.writeFileSync("./data/users.json", JSON.stringify(parsedData));
-  res
-    .status(201)
-    .json({ message: "Шинэ хэрэглэгчийн өгөгдөл амжилттай солигдлоо." });
+  const body = req.body;
+  const keys = Object.keys(body);
+  const map = keys.map((key) => `${key}="${body[key]}"`);
+  const join = map.join();
+
+  connection.query(
+    `UPDATE user SET ${join} WHERE user_id='${id}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res.status(200).json({ message: "Succesfull", data: result });
+    }
+  );
 };
 
 const deleteUser = (req, res) => {
   const { id } = req.params;
-  const data = fs.readFileSync("./data/users.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const findIndex = parsedData.users.findIndex((el) => el.id === id);
-  parsedData.users.splice(findIndex, 1);
-  fs.writeFileSync("./data/users.json", JSON.stringify(parsedData));
-  res
-    .status(201)
-    .json({ message: `${id} тай хэрэглэгч амжилттай устгагдлаа.` });
+  connection.query(`DELETE FROM user WHERE user_id='${id}'`, (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
 };
 
 module.exports = { getUsers, getUser, changeUser, deleteUser };
