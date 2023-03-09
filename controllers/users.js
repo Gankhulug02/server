@@ -1,12 +1,31 @@
 const { connection } = require("../config/mysql");
+const bcrypt = require("bcrypt");
 
-// const connection = mysql.createConnection({
-//   host: "localhost",
-//   port: 3306,
-//   user: "root",
-//   password: "",
-//   database: "azure_db",
-// });
+const createUser = (req, res) => {
+  const { name, email, password } = req.body;
+  const salted = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(password, salted);
+  console.log(name);
+  console.log(email);
+  console.log(password);
+
+  const phoneNumber = 88228822;
+  const query =
+    "INSERT INTO user (id, name, email, phone_number, password, profile_Img) VALUES( null, ?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [name, email, phoneNumber, hashedPassword, "url"],
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res
+        .status(201)
+        .json({ message: "Шинэ хэрэглэгч амжилттай бүртгэгдлээ." });
+    }
+  );
+};
 
 const getUsers = (req, res) => {
   connection.query(`SELECT * FROM user`, (err, result) => {
@@ -64,4 +83,4 @@ const deleteUser = (req, res) => {
   });
 };
 
-module.exports = { getUsers, getUser, changeUser, deleteUser };
+module.exports = { getUsers, getUser, changeUser, deleteUser, createUser };

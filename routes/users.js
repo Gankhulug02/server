@@ -7,11 +7,12 @@ const {
   getUser,
   changeUser,
   deleteUser,
+  createUser,
 } = require("../controllers/users");
 
 const router = Router();
 
-//Auth start
+// Auth start
 router.post("/signin", (req, res) => {
   const { id, email, password } = req.body;
   const data = fs.readFileSync("./data/users.json", "utf-8");
@@ -32,37 +33,38 @@ router.post("/signin", (req, res) => {
   }
 });
 
-router.post("/signup", (req, res) => {
-  const { name, role, email, password } = req.body;
-  const data = fs.readFileSync("./data/users.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const id = uuidv4();
-  const salted = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(password, salted);
-  const findUser = parsedData.users.find((user) => user.email === email);
-  console.log(hashedPassword);
-  if (findUser) {
-    res
-      .status(401)
-      .json({ message: "Ийм email тэй хэрэглэгч бүртгэлтэй байна" });
-    return;
-  }
+// router.post("/signup", (req, res) => {
+//   const { name, role, email, password } = req.body;
+//   const data = fs.readFileSync("./data/users.json", "utf-8");
+//   const parsedData = JSON.parse(data);
+//   const id = uuidv4();
+//   const salted = bcrypt.genSaltSync(10);
+//   const hashedPassword = bcrypt.hashSync(password, salted);
+//   const findUser = parsedData.users.find((user) => user.email === email);
+//   console.log(hashedPassword);
+//   if (findUser) {
+//     res
+//       .status(401)
+//       .json({ message: "Ийм email тэй хэрэглэгч бүртгэлтэй байна" });
+//     return;
+//   }
 
-  const newUser = {
-    id,
-    name,
-    role,
-    email,
-    password: hashedPassword,
-  };
+//   const newUser = {
+//     id,
+//     name,
+//     role,
+//     email,
+//     password: hashedPassword,
+//   };
 
-  parsedData.users.push(newUser);
-  fs.writeFileSync("./data/users.json", JSON.stringify(parsedData));
+//   parsedData.users.push(newUser);
+//   fs.writeFileSync("./data/users.json", JSON.stringify(parsedData));
 
-  res.status(201).json({ message: "Шинэ хэрэглэгчийгн амжилттай бүртгэлээ." });
-});
+//   res.status(201).json({ message: "Шинэ хэрэглэгчийгн амжилттай бүртгэлээ." });
+// });
 //Auth end
 
+router.post("/signup", createUser);
 router.get("/", getUsers);
 router.get("/:id", getUser).put("/:id", changeUser).delete("/:id", deleteUser);
 module.exports = router;
