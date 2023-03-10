@@ -93,7 +93,7 @@ server.post("/", (req, res) => {
     ripeValues = rawValues.slice(10);
   });
   connection.query(
-    `INSERT INTO user(user_id, name, role, email, password) VALUE${ripeValues}`,
+    `INSERT INTO user(id, name, role, email, password) VALUE${ripeValues}`,
     (err, result) => {
       if (err) {
         res.status(400).json({ message: err.message });

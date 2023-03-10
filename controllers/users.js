@@ -27,6 +27,32 @@ const createUser = (req, res) => {
   );
 };
 
+const signIn = (req, res) => {
+  const { email, password } = req.body;
+  console.log(email, password);
+  const query = `SELECT password, name FROM user WHERE email= ?`;
+  connection.query(query, [email], (err, result) => {
+    if (err) {
+      res.status(400).json({ message: "Ийм хэрэглэгч олдсонгүй" });
+      return;
+    }
+    if (result[0] == null) {
+      res.status(400).json({ message: "Ийм хэрэглэгч олдсонгүй" });
+      return;
+    }
+    const hashedPass = result[0].password;
+    const isCheck = bcrypt.compareSync(password, hashedPass);
+    const name = result[0].name;
+    if (isCheck) {
+      res.status(200).json({ message: "Амжилттай нэвтэрлээ.", user: name });
+    } else {
+      res
+        .status(401)
+        .json({ message: "Имэйл эсвэл нууц үг буруу байна.", user: null });
+    }
+  });
+};
+
 const getUsers = (req, res) => {
   connection.query(`SELECT * FROM user`, (err, result) => {
     if (err) {
@@ -83,4 +109,11 @@ const deleteUser = (req, res) => {
   });
 };
 
-module.exports = { getUsers, getUser, changeUser, deleteUser, createUser };
+module.exports = {
+  getUsers,
+  getUser,
+  changeUser,
+  deleteUser,
+  createUser,
+  signIn,
+};

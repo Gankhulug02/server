@@ -8,30 +8,30 @@ const {
   changeUser,
   deleteUser,
   createUser,
+  signIn,
 } = require("../controllers/users");
 
 const router = Router();
 
 // Auth start
-router.post("/signin", (req, res) => {
-  const { id, email, password } = req.body;
-  const data = fs.readFileSync("./data/users.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  // const findUser = parsedData.users.find((user) => user.id === id);
-  const findUser = parsedData.users.find((user) => user.email === email);
-  if (!findUser) {
-    res.status(401).json({ message: "Ийм хэрэглэгч олдсонгүй" });
-  }
+// router.post("/signin", (req, res) => {
+//   const { id, email, password } = req.body;
+//   const data = fs.readFileSync("./data/users.json", "utf-8");
+//   const parsedData = JSON.parse(data);
+//   const findUser = parsedData.users.find((user) => user.email === email);
+//   if (!findUser) {
+//     res.status(401).json({ message: "Ийм хэрэглэгч олдсонгүй" });
+//   }
 
-  const isCheck = bcrypt.compareSync(password, findUser.password);
-  if (isCheck) {
-    res.status(200).json({ message: "Амжилттай нэвтэрлээ.", user: findUser });
-  } else {
-    res
-      .status(401)
-      .json({ message: "Имэйл эсвэл нууц үг буруу байна.", user: null });
-  }
-});
+//   const isCheck = bcrypt.compareSync(password, findUser.password);
+//   if (isCheck) {
+//     res.status(200).json({ message: "Амжилттай нэвтэрлээ.", user: findUser });
+//   } else {
+//     res
+//       .status(401)
+//       .json({ message: "Имэйл эсвэл нууц үг буруу байна.", user: null });
+//   }
+// });
 
 // router.post("/signup", (req, res) => {
 //   const { name, role, email, password } = req.body;
@@ -64,7 +64,7 @@ router.post("/signin", (req, res) => {
 // });
 //Auth end
 
-router.post("/signup", createUser);
+router.post("/signup", createUser).post("/signin", signIn);
 router.get("/", getUsers);
 router.get("/:id", getUser).put("/:id", changeUser).delete("/:id", deleteUser);
 module.exports = router;
