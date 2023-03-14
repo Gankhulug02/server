@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const usersRoute = require("./routes/users");
 const wishListRoute = require("./routes/wishlist");
 const categoriesRoute = require("./routes/categories");
+const travelsRoute = require("./routes/travel");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -19,19 +20,13 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 server.use("/users", usersRoute);
+server.use("/travels", travelsRoute);
 server.use("/categories", categoriesRoute);
 server.use("/wishlist", wishListRoute);
 
-// server.get("/", (req, res) => {
-//   connection.query(`SELECT * FROM user`, (err, result) => {
-//     if (err) {
-//       res.status(400).json({ message: err.message });
-//       return;
-//     }
-
-//     res.status(200).json({ message: "Succesfull", data: result });
-//   });
-// });
+server.get("/", (req, res) => {
+  res.status(200).json({ message: "Servertei amjilttai nevterlee" });
+});
 
 // server.get("/:id", (req, res) => {
 //   const { id } = req.params;

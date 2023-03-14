@@ -19,7 +19,7 @@ const router = Router();
 //   res.json({});
 // });
 
-router.get("/", getWishlist);
+router.get("/:id", getWishlist);
 router.delete("/:id", deleteWishlist);
 
 // router.get("/:id", (req, res) => {

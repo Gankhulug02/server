@@ -1,5 +1,7 @@
-const cors = require("cors");
-const fs = require("fs");
+// const cors = require("cors");
+// const fs = require("fs");
+const { connection } = require("../config/mysql");
+const { convertQueryStr } = require("../utils/convertQuery");
 
 const addCategory = (req, res) => {
   try {
@@ -16,48 +18,55 @@ const addCategory = (req, res) => {
 };
 
 const getCategories = (req, res) => {
-  try {
-    const categories = fs.readFileSync("./data/categories.json", "utf-8");
-    const data = JSON.parse(categories);
-    res.status(200).json({ message: "success", data: data });
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  }
+  const query = `SELECT * FROM categories`;
+  connection.query(query, (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
 };
 
 const getCategory = (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = fs.readFileSync("./data/categories.json", "utf-8");
-    const parsedData = JSON.parse(data);
-    const category = parsedData.categories.find((el) => el.id === id);
-    res.status(200).json({ category });
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  }
+  const { id } = req.params;
+  const query = `SELECT * FROM categories WHERE id=?`;
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    } else if (!result[0]) {
+      res.status(400).json({ message: "iim category oldsongui" });
+      return;
+    }
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
 };
 const changeCategory = (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
-  const data = fs.readFileSync("./data/categories.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const findIndex = parsedData.categories.findIndex((el) => el.id === id);
-  parsedData.categories[findIndex] = {
-    ...parsedData.categories[findIndex],
-    ...req.body,
-  };
-  fs.writeFileSync("./data/categories.json", JSON.stringify(parsedData));
-  res.status(201).json({ message: "Category amjilttai soligdloo" });
+  const parsedData = convertQueryStr(req.body);
+  const query = `UPDATE SET ? WHERE id=?`;
+  connection.query(query, [parsedData, id], (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+    res.status(200).json({ message: "Succesfully Changed" });
+  });
 };
 
 const deleteCategory = (req, res) => {
   const { id } = req.params;
-  const data = fs.readFileSync("./data/categories.json", "utf-8");
-  const parsedData = JSON.parse(data);
-  const findIndex = parsedData.categories.findIndex((el) => el.id === id);
-  parsedData.categories.splice(findIndex, 1);
-  fs.writeFileSync("./data/categories.json", JSON.stringify(parsedData));
-  res.status(201).json({ message: `${id} тай category амжилттай устгагдлаа.` });
+  const query = `DELETE FROM categories WHERE id=?`;
+
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
 };
 
 module.exports = {

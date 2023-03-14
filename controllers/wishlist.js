@@ -1,13 +1,18 @@
+const { query } = require("express");
 const fs = require("fs");
+const { connection } = require("../config/mysql");
 
 const getWishlist = (req, res) => {
-  try {
-    const wishlist = fs.readFileSync("./data/wishlist.json", "utf-8");
-    const data = JSON.parse(wishlist);
-    res.status(200).json({ message: "success", data: data });
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  }
+  const userId = req.params.id;
+  const query = `SELECT * FROM travel_list as A LEFT JOIN travel as B ON a.travel_id = B.id WHERE A.user_id=?`;
+  connection.query(query, [userId], (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+    console.log(userId);
+    res.status(200).json({ message: "Succesfull", data: result });
+  });
 };
 
 const deleteWishlist = (req, res) => {

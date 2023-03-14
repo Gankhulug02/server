@@ -38,13 +38,16 @@ let values = "('test', 'test', 'test', 'test', 'test')";
 const convert = body.users.map((e) => {
   const keys = Object.keys(e);
   const map = keys.map((key) => `'${e[key]}`);
+  // console.log(keys);
+  console.log(map);
+  console.log("asdasda", e);
   const join = map.join();
   values += `,(${join})`;
+  console.log(join);
 });
-console.log(values);
+// console.log(values);
 
 // console.log(keys);
 // console.log(map);
-// console.log(join);
 
 // UPDATE tableName SET b WHERE key1 = value1 AND key2 = value2 AND key3 = value3;
